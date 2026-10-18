@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apology letter ♡</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Kalam:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap');
+
+        :root {
+            --lavender: #a18abb;
+            --deep: #655276;
+            --ink: #65596b;
+            --muted: #93859d;
+            --paper: #fffdf8;
+            --line: #e9e0ed;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 28px;
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            background:
+                radial-gradient(ellipse at 10% 10%, #e9dfff, transparent 40%),
+                radial-gradient(ellipse at 95% 90%, #f9e4ed, transparent 40%),
+                #f8f5fc;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ─── Envelope Overlay ─── */
+        .envelope-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background:
+                radial-gradient(ellipse at 30% 20%, #e9dfff, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, #f9e4ed, transparent 50%),
+                #f8f5fc;
+            transition: opacity .6s ease, visibility .6s ease;
+        }
+
+        .envelope-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            animation: envelopeFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes envelopeFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .envelope {
+            position: relative;
+            width: clamp(260px, 50vw, 360px);
+            height: clamp(170px, 32vw, 230px);
+            background: linear-gradient(145deg, #f3ecfa, #e8ddf4);
+            border-radius: 0 0 12px 12px;
+            box-shadow:
+                0 12px 40px #8e7a9825,
+                inset 0 -4px 12px #d4c3e515;
+            overflow: visible;
+        }
+
+        /* Envelope inner "V" fold lines */
+        .envelope::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(to bottom right, transparent 49.5%, #d4c3e530 49.5%, #d4c3e530 50.5%, transparent 50.5%),
+                linear-gradient(to bottom left, transparent 49.5%, #d4c3e530 49.5%, #d4c3e530 50.5%, transparent 50.5%);
+            border-radius: 0 0 12px 12px;
+            pointer-events: none;
+        }
+
+        /* Wax seal heart */
+        .envelope-seal {
+            position: absolute;
+            bottom: 28%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 44px;
+            height: 44px;
+            background: radial-gradient(circle at 40% 35%, #d4a0c0, #b07a9c);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: #fff;
+            box-shadow: 0 3px 10px #9b6d8840;
+            z-index: 3;
+        }
+
+        /* Envelope flap (triangle) */
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            z-index: 2;
+            transform-origin: top center;
+            transition: transform .6s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .envelope-flap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: calc(clamp(260px, 50vw, 360px) / 2) solid transparent;
+            border-right: calc(clamp(260px, 50vw, 360px) / 2) solid transparent;
+            border-top: calc(clamp(170px, 32vw, 230px) * 0.58) solid #ede3f5;
+            filter: drop-shadow(0 2px 4px #a08bb820);
+        }
+
+        .envelope-wrapper.opened .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        /* Letter paper rising out of envelope */
+        .envelope-letter {
+            position: absolute;
+            top: 10%;
+            left: 8%;
+            width: 84%;
+            height: 75%;
+            background:
+                repeating-linear-gradient(to bottom,
+                    transparent 0,
+                    transparent 22px,
+                    #eae1ed55 23px,
+                    transparent 24px),
+                linear-gradient(to bottom, #fffdf8, #faf6f0);
+            border-radius: 4px;
+            box-shadow: 0 2px 8px #8e7a9812;
+            z-index: 1;
+            transition: transform .7s cubic-bezier(.4, 0, .2, 1) .3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font: 18px 'Kalam', cursive;
+            color: #9c7eb0;
+        }
+
+        .envelope-wrapper.opened .envelope-letter {
+            transform: translateY(-85%);
+        }
+
+        /* Tap hint */
+        .envelope-hint {
+            margin-top: 28px;
+            font: 16px 'Kalam', cursive;
+            color: #a18abb;
+            animation: hintPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes hintPulse {
+
+            0%,
+            100% {
+                opacity: .5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.04);
+            }
+        }
+
+        /* Page hidden initially */
+        .page {
+            width: min(1120px, 100%);
+            margin: auto;
+            overflow: hidden;
+            border: 1px solid #e8dced;
+            border-radius: 24px;
+            background: #fffdf9;
+            box-shadow: 0 24px 80px #75618b17;
+            position: relative;
+            opacity: 0;
+            transform: scale(.96) translateY(30px);
+            transition: opacity .7s ease .1s, transform .7s ease .1s;
+        }
+
+        .page.revealed {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* ─── Corner Flower Clusters ─── */
+        .corner-flowers {
+            position: absolute;
+            font-size: 22px;
+            z-index: 2;
+            pointer-events: none;
+            filter: drop-shadow(0 2px 6px #c9a8e440);
+            line-height: 1;
+        }
+
+        .corner-flowers span {
+            display: inline-block;
+            animation: petalSway 3s ease-in-out infinite;
+        }
+
+        .corner-flowers span:nth-child(2) {
+            animation-delay: .4s;
+            font-size: 18px;
+        }
+
+        .corner-flowers span:nth-child(3) {
+            animation-delay: .8s;
+            font-size: 15px;
+        }
+
+        .corner-flowers span:nth-child(4) {
+            animation-delay: 1.2s;
+            font-size: 20px;
+        }
+
+        .flowers-tl {
+            top: 10px;
+            left: 14px;
+        }
+
+        .flowers-tr {
+            top: 10px;
+            right: 14px;
+        }
+
+        .flowers-bl {
+            bottom: 10px;
+            left: 14px;
+        }
+
+        .flowers-br {
+            bottom: 10px;
+            right: 14px;
+        }
+
+        .flowers-tr span,
+        .flowers-br span {
+            animation-direction: reverse;
+        }
+
+        @keyframes petalSway {
+
+            0%,
+            100% {
+                transform: rotate(-6deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(6deg) scale(1.1);
+            }
+        }
+
+        /* ─── Floating Clouds ─── */
+        .cloud {
+            position: fixed;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.35;
+            font-size: 60px;
+            color: #d8cce6;
+            filter: blur(1px);
+            animation: floatCloud linear infinite;
+        }
+
+        .cloud:nth-child(1) {
+            top: 6%;
+            font-size: 52px;
+            animation-duration: 38s;
+            animation-delay: 0s;
+            opacity: 0.25;
+        }
+
+        .cloud:nth-child(2) {
+            top: 18%;
+            font-size: 70px;
+            animation-duration: 44s;
+            animation-delay: -12s;
+            opacity: 0.30;
+        }
+
+        .cloud:nth-child(3) {
+            top: 35%;
+            font-size: 48px;
+            animation-duration: 50s;
+            animation-delay: -25s;
+            opacity: 0.20;
+        }
+
+        .cloud:nth-child(4) {
+            top: 55%;
+            font-size: 62px;
+            animation-duration: 42s;
+            animation-delay: -8s;
+            opacity: 0.28;
+        }
+
+        .cloud:nth-child(5) {
+            top: 72%;
+            font-size: 54px;
+            animation-duration: 46s;
+            animation-delay: -18s;
+            opacity: 0.22;
+        }
+
+        .cloud:nth-child(6) {
+            top: 88%;
+            font-size: 44px;
+            animation-duration: 52s;
+            animation-delay: -30s;
+            opacity: 0.18;
+        }
+
+        @keyframes floatCloud {
+            0% {
+                transform: translateX(-120px);
+            }
+
+            100% {
+                transform: translateX(calc(100vw + 120px));
+            }
+        }
+
+        .top {
+            position: relative;
+            padding: 35px 24px 29px;
+            text-align: center;
+            background: linear-gradient(125deg, #f0e9ff, #fff0f5, #f0e9ff);
+            border-bottom: 1px solid #e9deef;
+        }
+
+        .top::before,
+        .top::after {
+            position: absolute;
+            top: 20px;
+            color: #c1abd7;
+            font-size: 28px;
+        }
+
+        .top::before {
+            content: "✿";
+            left: 7%;
+        }
+
+        .top::after {
+            content: "❀";
+            right: 7%;
+        }
+
+        .eyebrow {
+            margin-bottom: 12px;
+            color: #987daf;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font: 400 clamp(34px, 5vw, 52px)/1.2 'Playfair Display', Georgia, serif;
+            color: var(--deep);
+        }
+
+        h1 em {
+            color: #a28aba;
+            font-weight: 400;
+        }
+
+        .subtitle {
+            margin: 13px 0 0;
+            font: 17px 'Kalam', cursive;
+            color: #897993;
+            white-space: pre-line;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1.12fr .88fr;
+            gap: 35px;
+            padding: 36px;
+            align-items: start;
+        }
+
+        .letter {
+            position: relative;
+            padding: 27px 27px 32px;
+            background:
+                repeating-linear-gradient(to bottom,
+                    transparent 0,
+                    transparent 35px,
+                    #eae1ed 36px,
+                    transparent 37px),
+                var(--paper);
+            border: 1px solid #ede3ef;
+            border-radius: 6px 16px 8px 15px;
+            box-shadow: 0 12px 28px #8e7a9810;
+        }
+
+        .letter::after {
+            content: "✿";
+            position: absolute;
+            right: 16px;
+            top: 12px;
+            color: #d3bedf;
+            font-size: 25px;
+        }
+
+        .label {
+            margin: 0 0 18px;
+            color: #a18abb;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .greeting {
+            margin-bottom: 15px;
+            font: 22px 'Kalam', cursive;
+            white-space: pre-line;
+        }
+
+        .paragraphs p {
+            margin: 0 0 13px;
+            font: 16px/2.15 'Kalam', cursive;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        .signature {
+            margin-top: 24px;
+            color: #9c7eb0;
+            font: 21px/1.7 'Kalam', cursive;
+            white-space: pre-line;
+        }
+
+        .photos-heading {
+            margin: 0 0 7px;
+            color: var(--deep);
+            font: 400 28px 'Playfair Display', Georgia, serif;
+        }
+
+        .photos-intro {
+            margin: 0 0 24px;
+            color: var(--muted);
+            font: 15px/1.7 'Kalam', cursive;
+            white-space: pre-line;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .polaroid {
+            padding: 9px 9px 15px;
+            background: white;
+            border: 1px solid #eee6f0;
+            box-shadow: 0 9px 22px #75618b12;
+            transform: rotate(-2deg);
+            transition: transform .25s;
+        }
+
+        .polaroid:nth-child(even) {
+            transform: rotate(2deg) translateY(12px);
+        }
+
+        .polaroid:hover {
+            transform: rotate(0) translateY(-4px);
+        }
+
+        .photo {
+            position: relative;
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+            background: #eee6f6;
+        }
+
+        .photo img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            color: #9a84b0;
+            font: 15px 'Kalam', cursive;
+            text-align: center;
+        }
+
+        .placeholder span {
+            font-size: 32px;
+        }
+
+        .caption {
+            margin: 12px 2px 0;
+            font: 14px 'Kalam', cursive;
+            color: #8e7b9a;
+            text-align: center;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        .bottom-note {
+            padding: 18px 20px;
+            text-align: center;
+            background: #f6f0fb;
+            border-top: 1px solid #e9deef;
+            font: 16px 'Kalam', cursive;
+            color: #9580a7;
+            white-space: pre-line;
+        }
+
+        button:focus-visible {
+            outline: 3px solid #a18abb;
+            outline-offset: 4px;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 12px;
+            }
+
+            .content {
+                grid-template-columns: 1fr;
+                gap: 34px;
+                padding: 23px;
+            }
+
+            .top {
+                padding: 35px 17px 27px;
+            }
+
+            .top::before {
+                left: 4%;
+            }
+
+            .top::after {
+                right: 4%;
+            }
+
+            .letter {
+                padding: 24px 20px;
+            }
+
+            .gallery {
+                gap: 14px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .content {
+                padding: 16px;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .polaroid:nth-child(n) {
+                transform: none;
+            }
+
+            .photo {
+                aspect-ratio: 4 / 3;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Envelope Overlay -->
+    <div class="envelope-overlay" id="envelopeOverlay">
+        <div class="envelope-wrapper" id="envelopeWrapper">
+            <div class="envelope">
+                <div class="envelope-flap"></div>
+                <div class="envelope-letter">for you ♡</div>
+                <div class="envelope-seal">♡</div>
+            </div>
+        </div>
+        <div class="envelope-hint">tap to open ♡</div>
+    </div>
+
+    <!-- Floating Clouds -->
+    <div class="cloud">☁</div>
+    <div class="cloud">☁</div>
+    <div class="cloud">☁</div>
+    <div class="cloud">☁</div>
+    <div class="cloud">☁</div>
+    <div class="cloud">☁</div>
+
+    <main class="page" id="mainPage">
+        <!-- Corner Flower Clusters -->
+        <div class="corner-flowers flowers-tl"><span>🌸</span> <span>✿</span> <span>❀</span> <span>🌷</span></div>
+        <div class="corner-flowers flowers-tr"><span>🌷</span> <span>❀</span> <span>✿</span> <span>🌸</span></div>
+        <div class="corner-flowers flowers-bl"><span>❀</span> <span>🌸</span> <span>🌷</span> <span>✿</span></div>
+        <div class="corner-flowers flowers-br"><span>✿</span> <span>🌷</span> <span>🌸</span> <span>❀</span></div>
+        <header class="top">
+            <div class="eyebrow" id="eyebrow"></div>
+            <h1><span id="title"></span><br><em id="title2"></em></h1>
+            <p class="subtitle" id="subtitle"></p>
+        </header>
+
+        <div class="content">
+            <article class="letter">
+                <div class="label" id="letterLabel"></div>
+                <div class="greeting" id="greeting"></div>
+                <div class="paragraphs" id="paragraphs"></div>
+                <div class="signature" id="signature"></div>
+            </article>
+
+            <section>
+                <div class="label" id="photoLabel"></div>
+                <h2 class="photos-heading" id="photoTitle"></h2>
+                <p class="photos-intro" id="photoIntro"></p>
+                <div class="gallery" id="gallery"></div>
+            </section>
+        </div>
+
+        <footer class="bottom-note" id="footer"></footer>
+    </main>
+
+    <script>
+        /* ==================================================
+           EDIT ALL YOUR WORDS HERE
+           Replace the placeholder text with your own.
+           ================================================== */
+
+        const TEXTS = {
+            browserTitle: "LETTER FOR MAI",
+
+            eyebrow: "SORRY!",
+            title: "A leter to read",
+            subtitle: "a little apology note for my mistake",
+
+            letterLabel: "[APOLOGY LETTER]",
+            greeting: "Dear Mai,",
+
+            paragraphs: [
+                "i'm really sorry for not being there for you when you needed me the most,i try my best to be there for you. i know i hurt you and i do regret it.",
+                "i value our friendship more than anything and the thought of losing you is something which i dont want.",
+                "i promise to be more thoughtful and supportive in the future. i hope we can forgive each other and we can move forward from this.",
+                "i hope you can understand me where im coming from and also understand that this is the first time im doing something like this. i'll be here for you, always and please dont say i take u for granted im thankful to have you and thanks for making my birthday special."
+            ],
+
+            signature: "With love,\n[sid]",
+
+            photoLabel: "MEMORIES",
+            photoIntro: "to more memories <3",
+
+            footer: "Once again , I'm really sorry for what happened so stop distancing."
+        };
+
+        /* ==================================================
+           EDIT YOUR PHOTO PATHS AND CAPTIONS HERE
+           Add or remove photo objects as needed.
+           ================================================== */
+
+        const PHOTOS = [
+            {
+                path: "images/WhatsApp Image 2026-10-19 at 1.47.15 AM.jpeg",
+                caption: "♡"
+            },
+            {
+                path: "images/WhatsApp Image 2026-10-19 at 1.47.15 AM (1).jpeg",
+                caption: "♡"
+            },
+            {
+                path: "images/WhatsApp Image 2026-10-19 at 1.47.15 AM (2).jpeg",
+                caption: "♡"
+            }
+        ];
+
+        /* PAGE RENDERING — NO NEED TO EDIT BELOW */
+
+        document.title = TEXTS.browserTitle;
+
+        const ids = [
+            "eyebrow", "title", "title2", "subtitle",
+            "letterLabel", "greeting", "signature",
+            "photoLabel", "photoTitle", "photoIntro", "footer"
+        ];
+
+        ids.forEach(id => {
+            document.getElementById(id).textContent = TEXTS[id];
+        });
+
+        const paragraphs = document.getElementById("paragraphs");
+
+        TEXTS.paragraphs.forEach(text => {
+            const p = document.createElement("p");
+            p.textContent = text;
+            paragraphs.appendChild(p);
+        });
+
+        const gallery = document.getElementById("gallery");
+
+        PHOTOS.forEach((photo, index) => {
+            const card = document.createElement("article");
+            card.className = "polaroid";
+
+            const wrap = document.createElement("div");
+            wrap.className = "photo";
+
+            const img = document.createElement("img");
+            img.alt = photo.caption || `Memory ${index + 1}`;
+            img.loading = "lazy";
+            img.hidden = true;
+
+            const placeholder = document.createElement("div");
+            placeholder.className = "placeholder";
+
+            const icon = document.createElement("span");
+            icon.textContent = "♡";
+
+            const hint = document.createElement("div");
+            hint.textContent = `Add photo ${index + 1}`;
+
+            placeholder.append(icon, hint);
+            wrap.append(img, placeholder);
+
+            img.addEventListener("load", () => {
+                img.hidden = false;
+                placeholder.hidden = true;
+            });
+
+            img.addEventListener("error", () => {
+                img.hidden = true;
+                placeholder.hidden = false;
+            });
+
+            if (photo.path) img.src = photo.path;
+
+            const caption = document.createElement("p");
+            caption.className = "caption";
+            caption.textContent = photo.caption;
+
+            card.append(wrap, caption);
+            gallery.appendChild(card);
+        });
+        /* ─── Envelope Open Logic ─── */
+        const envelopeWrapper = document.getElementById('envelopeWrapper');
+        const envelopeOverlay = document.getElementById('envelopeOverlay');
+        const mainPage = document.getElementById('mainPage');
+
+        envelopeWrapper.addEventListener('click', () => {
+            /* Stage 1: open flap */
+            envelopeWrapper.classList.add('opened');
+
+            /* Stage 2: after letter rises, fade out overlay & reveal page */
+            setTimeout(() => {
+                envelopeOverlay.classList.add('hidden');
+                mainPage.classList.add('revealed');
+            }, 1400);
+        });
+    </script>
+</body>
+
+</html>
